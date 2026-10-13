@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE html>
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="jakarta.faces.facelets"
+                xmlns:h="jakarta.faces.html"
+                template="./layout.xhtml"
+                xmlns:f="jakarta.faces.core"
+                xmlns:pt="jakarta.faces.passthrough">
+
+
+
+    <!-- HEADER -->
+    <ui:define name="header">
+
+        <h1 class="titulo">Biblioteca UNSE</h1>
+
+        <div class="contenedor-ancla">
+            <a href="#contacto" class="btn-ancla">
+                Realizar una consulta
+            </a>
+        </div>
+
+    </ui:define>
+
+
+
+    <!-- MAIN -->
+
+    <ui:define name="main">
+        <div class="contenedorMain">
+
+        </div>
+        <section>
+
+            <h2>Libros más solicitados para préstamos</h2>
+
+            <div class="contenedor-tarjeta">
+
+                <article class="tarjeta">
+
+                    <h:graphicImage library="imagenes"
+                                    name="principito.jpg"
+                                    alt="El Principito"/>
+
+                    <div class="info">
+                        <h3>El Principito</h3>
+                        <p><strong>Autor:</strong> A. Saint-Exupéry</p>
+                        <p><strong>Año:</strong> 1943</p>
+                        <p class="resena-corta">
+                            Un clásico de la literatura mundial.
+                        </p>
+                    </div>
+
+                </article>
+
+                <article class="tarjeta">
+
+                    <h:graphicImage library="imagenes"
+                                    name="harry.jpg"
+                                    alt="Harry Potter"/>
+
+                    <div class="info">
+                        <h3>Harry Potter</h3>
+                        <p><strong>Autor:</strong> J. K. Rowling</p>
+                        <p><strong>Año:</strong> 1997</p>
+                        <p class="resena-corta">
+                            El inicio del joven mago.
+                        </p>
+                    </div>
+
+                </article>
+
+                <article class="tarjeta">
+
+                    <h:graphicImage library="imagenes"
+                                    name="martinFierro.jpg"
+                                    alt="Martín Fierro"/>
+
+                    <div class="info">
+                        <h3>Martín Fierro</h3>
+                        <p><strong>Autor:</strong> José Hernández</p>
+                        <p><strong>Año:</strong> 1872</p>
+                        <p class="resena-corta">
+                            Poema narrativo del gaucho.
+                        </p>
+                    </div>
+
+                </article>
+
+                <article class="tarjeta">
+
+                    <h:graphicImage library="imagenes"
+                                    name="Romeoyjulieta.jpg"
+                                    alt="Romeo y Julieta"/>
+
+                    <div class="info">
+                        <h3>Romeo y Julieta</h3>
+                        <p><strong>Autor:</strong> W. Shakespeare</p>
+                        <p><strong>Año:</strong> 1597</p>
+                        <p class="resena-corta">
+                            Amor trágico en Verona.
+                        </p>
+                    </div>
+
+                </article>
+
+            </div>
+
+        </section>
+
+    </ui:define>
+
+ <ui:define name="aside">
+
+        <div class="container-buscador">
+            
+            <h3>
+                <i class="fa-solid fa-magnifying-glass"></i>
+                Buscador
+            </h3>
+            
+            <h:form id="formBusqueda">
+                <div class="input-group">
+                    
+                    <!-- Cuando el usuario escribe algo en el buscador,
+                    el texto que escriba se guarda automaticamente en la variable "filtro" dentro de LibroBean -->
+                    <h:inputText value="#{libroBean.filtro}" 
+                                 styleClass="campo-busqueda" 
+                                 pt:placeholder="Buscar por título..."/>
+                    
+                    <!-- Al hacer click en "buscar" el sistema te re dirige a libros.xhtml. Esto no lo podria hacer con AJAX. 
+                    Todo eso lo hace la linea del action.
+                    El includeViewParams=true: Esto le dice a JSF que tome el valor que quedo guardado en "LibroBean.filtro" y lo pase como parametro a la siguiente pagina.
+                    -->
+                    <h:commandButton value="Buscar"
+                                     action="libros?faces-redirect=true&amp;includeViewParams=true"
+                                     styleClass="btn-buscar" />
+                    <!-- Por ultimo, Cuando el usuario llega a la pagina de libros, esa pagina tiene la isntruccion de ejecutar la busqueda automaticamente.
+                    seria el <f:metadata> que tenemos en la pagina libro.xhtml-->
+                </div>
+            </h:form>
+        </div> <div class="container-redes">
+            <h3>
+                <i class="fa-solid fa-share-nodes"></i>
+                Redes Sociales
+            </h3>
+
+            <ul class="lista-redes">
+                <li>
+                    <a href="#" class="red-link fb">
+                        <i class="fa-brands fa-facebook"></i> Facebook
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="red-link ig">
+                        <i class="fa-brands fa-instagram"></i> Instagram
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="red-link yt">
+                        <i class="fa-brands fa-youtube"></i> YouTube
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+    </ui:define>
+
+</ui:composition>

@@ -1,0 +1,57 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="jakarta.faces.facelets"
+      xmlns:h="jakarta.faces.html"
+      xmlns:f="jakarta.faces.core">
+
+    <h:head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+        <h:outputStylesheet library="css" name="backend.css"/>
+
+        <link rel="stylesheet" 
+              href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
+
+        <title>Panel Administrador - Biblioteca UNSE</title>
+    </h:head>
+
+    <h:body>
+        <div class="contenedor-admin">
+
+            <header class="header-admin">
+                <ui:insert name="header"/>
+            </header>
+
+            <nav class="nav-admin">
+                <ul>
+<!--                    <li>
+                        <h:link outcome="indexBackend" value="Inicio"/>
+                    </li>-->
+                    <li>
+                        <h:link outcome="prestamosBackend" value="Préstamos"/>
+                    </li>
+                    <li>
+                        <h:link outcome="librosBackend" value="Libros"/>
+                    </li>
+                    <li>
+                        <h:link outcome="contactosBackend" value="Contactos"/>
+                    </li>
+                    
+                    <li>
+                        <h:link outcome="proveedorBackend" value="Proveedores"/>
+                    </li>
+                </ul>
+            </nav>
+
+            <main class="main-admin">
+                <ui:insert name="main"/>
+            </main>
+
+            <footer class="footer-admin">
+                <p>&copy; 2026 Sistema de Gestión Interna - Biblioteca UNSE</p>
+            </footer>
+
+        </div>
+    </h:body>
+</html>

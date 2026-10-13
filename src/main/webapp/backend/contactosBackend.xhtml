@@ -1,0 +1,119 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="jakarta.faces.facelets"
+                template="./layoutBackend.xhtml"
+                xmlns:h="jakarta.faces.html"
+                xmlns:f="jakarta.faces.core">
+
+    <f:metadata>
+        <f:viewAction action="#{usuarioController.verificarSesion()}" />
+    </f:metadata>
+
+
+    <ui:define name="header">
+        <h1 class="titulo">ABM SOCIOS</h1>
+        <div class="contenedor-ancla">
+            <h:link outcome="/index" styleClass="btn-ancla">Ir al Inicio Público</h:link>
+        </div>
+    </ui:define>
+
+    <ui:define name="main">
+        <h2>Formulario para registrar Socio</h2>
+        <f:view>
+
+            <h:panelGroup id="bloqueSocios" layout="block">
+
+                <h:form id="formAlta">
+                    <h1><h:outputText value="Registrar Socio"/></h1>
+                    <h:messages globalOnly="true" styleClass="mensaje-error" />
+
+                    <h:panelGrid columns="3" styleClass="formulario-grid">
+                        <h:outputLabel value="Apellido:" for="apellido" />
+                        <h:inputText id="apellido" value="#{socioBean.so.apellido}" />
+                        <h:message for="apellido" styleClass="error-input" />
+
+                        <h:outputLabel value="Nombres:" for="nombres" />
+                        <h:inputText id="nombres" value="#{socioBean.so.nombres}" />
+                        <h:message for="nombres" styleClass="error-input" />
+
+                        <h:outputLabel value="Dni:" for="dni" />
+                        <h:inputText id="dni" value="#{socioBean.so.dni}">
+                            <f:convertNumber integerOnly="true" />
+                        </h:inputText>
+                        <h:message for="dni" styleClass="error-input" />
+
+                        <h:outputLabel value="NumeroSocio:" for="numeroSocio" />
+                        <h:inputText id="numeroSocio" value="#{socioBean.so.numeroSocio}" />
+                        <h:message for="numeroSocio" styleClass="error-input" />
+
+                        <h:outputLabel value="Telefono:" for="telefono" />
+                        <h:inputText id="telefono" value="#{socioBean.so.telefono}" />
+                        <h:message for="telefono" styleClass="error-input" />
+
+                        <h:outputLabel for="estado" value="Estado Financiero:"/>
+                        <h:selectOneMenu id="estado" value="#{socioBean.so.estado}">
+                            <f:selectItem itemValue="activo" itemLabel="Al día"/>
+                            <f:selectItem itemValue="mora" itemLabel="Con deuda"/>
+                        </h:selectOneMenu>
+                        <h:message for="estado" styleClass="error-input" />
+
+                        <h:outputLabel for="genero" value="Género:"/>
+                        <h:selectOneMenu id="genero" value="#{socioBean.so.genero}">
+                            <f:selectItem itemValue="hombre" itemLabel="Hombre"/>
+                            <f:selectItem itemValue="mujer" itemLabel="Mujer"/>
+                        </h:selectOneMenu>
+                        <h:message for="genero" styleClass="error-input" />
+                        <h:commandButton value="Guardar" action="#{socioBean.guardar()}">
+                            <f:ajax execute="@form" render=":formAlta :listado"/>
+                        </h:commandButton>
+                    </h:panelGrid>
+                </h:form>
+
+                <hr/>
+
+                <h:form id="listado">
+                    <h1><h:outputText value="Listado de Socios"/></h1>
+                    <h:dataTable value="#{socioBean.socios}" var="item" styleClass="tabla-admin">
+
+                        <h:column>
+                            <f:facet name="header">Apellido</f:facet>
+                            <h:outputText value="#{item.apellido}"/>
+                        </h:column>
+
+                        <h:column>
+                            <f:facet name="header">Nombres</f:facet>
+                            <h:outputText value="#{item.nombres}"/>
+                        </h:column>
+
+                        <h:column>
+                            <f:facet name="header">Telefono</f:facet>
+                            <h:outputText value="#{item.telefono}">
+                                <f:convertNumber groupingUsed="true" />
+                            </h:outputText>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">Dni</f:facet>
+                            <h:outputText value="#{item.dni}">
+                                <f:convertNumber groupingUsed="true" />
+                            </h:outputText>
+                        </h:column>
+
+                        <h:column>
+                            <f:facet name="header">Operaciones</f:facet>
+                            <h:commandButton id="btnSel" value="Seleccionar" action="#{socioBean.seleccionar()}">
+                                <f:setPropertyActionListener value="#{item.id}" target="#{socioBean.idSocio}"/>
+                                <f:ajax execute="@form" render=":bloqueSocios"/>
+                            </h:commandButton>
+                            <h:commandButton value="Eliminar" action="#{socioBean.eliminar()}" >
+                                <f:setPropertyActionListener value="#{item.id}" target="#{socioBean.idSocio}"/>
+                                <f:ajax execute="@form" render=":bloqueSocios"/>
+                            </h:commandButton>            
+                        </h:column>
+                    </h:dataTable>
+                </h:form>
+
+            </h:panelGroup>
+        </f:view>
+    </ui:define>
+</ui:composition>

@@ -1,0 +1,81 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="jakarta.faces.facelets"
+                template="./layoutBackend.xhtml"
+                xmlns:h="jakarta.faces.html"
+                xmlns:f="jakarta.faces.core">
+
+   
+        <f:metadata>
+            <f:viewAction action="#{usuarioController.verificarSesion()}" />
+        </f:metadata>
+
+   
+
+
+        <ui:define name="header">
+            <h1 class="titulo">Gestión Interna de Préstamos y Devoluciones</h1>
+            <div class="contenedor-ancla">
+                <h:link outcome="/index" styleClass="btn-ancla">Ir al Inicio Público</h:link>
+            </div>
+        </ui:define>
+        <ui:define name="main">
+            
+
+            <span class="subtexto-admin">Operaciones de mostrador presencial - Control de Stock</span>
+
+            <h:form id="formPrestamosAdmin">
+                <h:messages id="mensajesLocales" globalOnly="false" showDetail="true" showSummary="true" 
+                            infoClass="mensaje-exito" warnClass="mensaje-alerta" errorClass="mensaje-error" />
+
+                <h3>Préstamos Activos</h3>
+                <h:dataTable value="#{adminPrestamosController.prestamosActivos}" var="p" styleClass="tabla-admin">
+                    <h:column><f:facet name="header">Código</f:facet>#{p.id}</h:column>
+                    <h:column>
+                        <f:facet name="header">Socio en Mostrador</f:facet>
+                        <strong>#{p.sociosId.apellido}, #{p.sociosId.nombres}</strong>
+                        <span class="subtexto-admin">DNI: #{p.sociosId.dni}</span>
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">Libro</f:facet>
+                        <ui:repeat value="#{p.librosprestamoCollection}" var="det" varStatus="status">
+                            <span class="subtexto-admin">#{status.index + 1}. Título: #{det.librosId.titulo}</span><br/>
+                        </ui:repeat>
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">Estado</f:facet>
+                        <span class="badge activo">#{p.estado}</span>
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">Acción</f:facet>
+                        <h:commandLink id="btnDevolver" value="Recibir Devolución" 
+                                       action="#{adminPrestamosController.devolver(p.id)}" 
+                                       styleClass="btn-borrar-admin">
+                            <f:ajax render="@form" />
+                        </h:commandLink>
+                        <h:message for="btnDevolver" styleClass="mensaje-alerta" />
+                    </h:column>
+                </h:dataTable>
+
+                <h3>Historial de Devueltos</h3>
+                <h:dataTable value="#{adminPrestamosController.prestamosHistorial}" var="h" styleClass="tabla-admin">
+                    <h:column><f:facet name="header">Código</f:facet>#{h.id}</h:column>
+                    <h:column>
+                        <f:facet name="header">Socio</f:facet>
+                        <strong>#{h.sociosId.apellido}, #{h.sociosId.nombres}</strong>
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">Multa Aplicada</f:facet>
+                        <h:outputText value="#{h.multa > 0 ? '$' .concat(h.multa) : '-'}" 
+                                      style="#{h.multa > 0 ? 'color: #c0392b; font-weight: bold;' : 'color: #7f8c8d;'}" />
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">Estado</f:facet>
+                        <span class="badge mora">#{h.estado}</span>
+                    </h:column>
+                </h:dataTable>
+            </h:form>
+        </ui:define>
+ 
+</ui:composition>

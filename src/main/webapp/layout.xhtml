@@ -1,0 +1,148 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="jakarta.faces.facelets"
+      xmlns:h="jakarta.faces.html"
+      xmlns:f="jakarta.faces.core">
+
+    <h:head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <h:outputStylesheet library="css" name="default.css"/>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
+        <title>Biblioteca UNSE</title>
+    </h:head>
+
+    <h:body>
+        <div class="contenedor">
+            <header>
+                <ui:insert name="header"/>
+
+                <h:form id="formInvitadoHeader">
+                    <h:panelGroup rendered="#{not usuarioSBean.logueado}" styleClass="grupo-botones-invitado">
+                        <h:link outcome="/login" value="Iniciar Sesión" styleClass="btn-header" />
+                        <h:link outcome="/login" value="Registrarse" styleClass="btn-header" />
+                    </h:panelGroup>
+                </h:form>
+
+                <h:form id="formSessionHeader">
+                    <h:panelGroup rendered="#{usuarioSBean.logueado}" styleClass="bloque-usuario-cabecera">
+                        <div class="contenedor-carrito-flotante">
+                            <div class="carrito-interactivo">
+                                <i class="fa-solid fa-shopping-cart"></i>
+                                <span class="badge-carrito">#{prestamoBean.cantidadItems}</span>
+                            </div>
+
+                            <div class="seccion-carrito-visible">
+                                <h4><span>Mis Libros (Mostrador)</span></h4>
+                                
+                                <h:outputText value="Carrito vacío" 
+                                              rendered="#{prestamoBean.cantidadItems eq 0}" 
+                                              styleClass="carrito-vacio-texto" />
+
+                                <ui:repeat value="#{prestamoBean.canasta}" var="lib">
+                                    <div class="carrito-visible-item">
+                                        <span title="#{lib.titulo}">#{lib.titulo}</span>
+                                        <h:commandLink action="#{prestamoBean.quitarDelCarrito(lib)}" styleClass="btn-quitar-visible">
+                                            <i class="fa-solid fa-trash-can"></i>
+                                            <f:ajax render="@form"/>
+                                        </h:commandLink>
+                                    </div>
+                                </ui:repeat>
+
+                                <h:panelGroup rendered="#{prestamoBean.cantidadItems > 0 and usuarioSBean.rol eq 'ADMIN'}">
+                                    <div class="bloque-mostrador-socio">
+                                        <h:outputLabel value="DNI del Socio en Mostrador: " styleClass="lbl-mostrador" />
+                                        <h:inputText id="dniInput" value="#{prestamoBean.dniSocioForm}" styleClass="input-mostrador" onkeydown="if(event.keyCode===13){return false;}">
+                                            <f:ajax event="keyup" render="bloque-botones-confirmacion"/>
+                                        </h:inputText>
+                                    </div>
+
+                                    <h:panelGroup id="bloque-botones-confirmacion">
+                                        <h:commandButton id="btnConfirmar"
+                                                         value="Confirmar Préstamo" 
+                                                         action="#{prestamoBean.confirmarPrestamo()}" 
+                                                         styleClass="btn-reservar btn-confirmar-carrito">
+                                            <f:ajax execute="@form" render="@form"/>
+                                        </h:commandButton>
+                                        <h:message for="btnConfirmar" styleClass="error-mensajes-footer" />
+                                    </h:panelGroup>
+                                </h:panelGroup>
+
+                                <h:panelGroup rendered="#{prestamoBean.cantidadItems > 0 and usuarioSBean.rol ne 'ADMIN'}">
+                                    <div class="mensaje-alumno-mostrador">
+                                        <i class="fa-solid fa-person-walking-arrow-right"></i>
+                                        Acercate al mostrador de la biblioteca y presentá tu <strong>DNI</strong> para que el bibliotecario confirme el retiro físico de estos libros.
+                                    </div>
+                                </h:panelGroup>
+                            </div>
+                        </div>
+
+                        <div class="usuario-acciones">
+                            <h:panelGroup styleClass="usuario-info">
+                                <i class="fa-solid fa-user"></i> 
+                                <span>Hola, <strong>#{usuarioSBean.nombreUsuario}</strong></span>
+                            </h:panelGroup>
+                            <h:link outcome="/backend/librosBackend" value="Panel Admin" styleClass="btn-backend-atajo" rendered="#{usuarioSBean.rol eq 'ADMIN'}" />
+                            <h:commandButton value="Cerrar Sesión" action="#{usuarioController.cerrarSesion()}" styleClass="btn-logout" />
+                        </div>
+                    </h:panelGroup>
+                </h:form>
+            </header>
+
+            <nav>
+                <ul>
+                    <li><h:link outcome="index" value="Inicio"/></li>
+                    <li><h:link outcome="libros" value="Libros"/></li>
+                    <li><h:link outcome="contactos" value="Contactos"/></li>
+                </ul>
+            </nav>
+
+            <main class="main">
+                <ui:insert name="main"/>
+            </main>
+
+            <aside>
+                <ui:insert name="aside"/>
+            </aside>
+
+            <footer>
+                <div id="contacto" class="footer-contenedor">
+                    <div class="footer-info">
+                        <h3>Contacto</h3>
+                        <address>
+                            <p><i class="fa-solid fa-location-dot"></i> Castelli 559, Santiago del Estero</p>
+                            <p><i class="fa-solid fa-phone"></i> +54 3841 404667</p>
+                        </address>
+                    </div>
+                    <div class="footer-form">
+                        <h3>Envíanos tu consulta</h3>
+                        <h:form id="formConsultaFooter">
+                            <h:messages styleClass="error-mensajes-footer" />
+                            <h:outputLabel for="nombre" value="Nombre:"/>
+                            <h:inputText id="nombre" value="#{consultaBean.c.nombreCompleto}" required="true" requiredMessage="El nombre es obligatorio."/>
+                            <h:outputLabel for="dni" value="DNI:"/>
+                            <h:inputText id="dni" value="#{consultaBean.c.dni}" required="true" requiredMessage="El DNI es obligatorio."/>
+                            <h:outputLabel for="fecha" value="Fecha:"/>
+                            <h:inputText id="fecha" value="#{consultaBean.c.fecha}">
+                                <f:passThroughAttribute name="type" value="date"/>
+                                <f:convertDateTime pattern="yyyy-MM-dd" timeZone="GMT-3"/>
+                            </h:inputText>
+                            <h:outputLabel for="email" value="Email:"/>
+                            <h:inputText id="email" value="#{consultaBean.c.email}" required="true" requiredMessage="El Email es obligatorio">
+                                <f:passThroughAttribute name="type" value="email"/>
+                            </h:inputText>
+                            <h:outputLabel for="consulta" value="Consulta:"/>
+                            <h:inputTextarea id="consulta" value="#{consultaBean.c.consulta}" required="true" requiredMessage="El texto de la consulta no puede estar vacío."/>
+                            <h:commandButton value="Enviar" action="#{consultaBean.guardar()}">
+                                <f:ajax execute="@form" render="@form"/>
+                            </h:commandButton>
+                        </h:form>
+                    </div>
+                </div>
+                <article class="footer-copyright">
+                    <p>&copy; 2026 Biblioteca UNSE - Vallejos Enzo Gonzalo</p>
+                </article>
+            </footer>
+        </div>
+    </h:body>
+</html>

@@ -1,0 +1,128 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="jakarta.faces.facelets"
+                template="./layoutBackend.xhtml"
+                xmlns:h="jakarta.faces.html"
+                xmlns:f="jakarta.faces.core">
+
+    <f:metadata>
+        <f:viewAction action="#{usuarioController.verificarSesion()}" />
+    </f:metadata>
+
+
+    <ui:define name="header">
+        <h1 class="titulo">ABM LIBROS</h1>
+        <div class="contenedor-ancla">
+            <h:link outcome="/index" styleClass="btn-ancla">Ir al Inicio Público</h:link>
+        </div>
+    </ui:define>
+
+
+
+    <ui:define name="main">
+        <f:view>
+            <h:panelGroup id="bloqueAbm" layout="block">
+
+                <h:form id="formAlta">
+                    <h1><h:outputText value="Registrar Libro"/></h1>
+                    <h:panelGrid columns="3">
+
+                        <h:outputLabel value="Título:" for="titulo" />
+                        <h:inputText id="titulo" value="#{libroBean.libro.titulo}" title="Titulo" />
+                        <h:message for="titulo"/>
+
+                        <h:outputLabel value="Año:" for="year" />
+                        <h:inputText id="year" value="#{libroBean.libro.year}" title="Year" />
+                        <h:message for="year"/>
+
+                        <h:outputLabel value="Edición:" for="edicion" />
+                        <h:inputText id="edicion" value="#{libroBean.libro.edicion}" title="Edicion" />
+                        <h:message for="edicion"/>
+
+                        <h:outputLabel value="Editorial:" for="editorial" />
+                        <h:inputText id="editorial" value="#{libroBean.libro.editorial}" title="Editorial" />
+                        <h:message for="editorial"/>
+
+                        <h:outputLabel value="Descripción:" for="descripcion" />
+                        <h:inputTextarea rows="4" cols="30" id="descripcion" value="#{libroBean.libro.descripcion}" title="Descripcion" />
+                        <h:message for="descripcion"/>
+
+                        <h:outputLabel value="Disponibles:" for="disponibles" />
+                        <h:inputText id="disponibles" value="#{libroBean.libro.disponibles}" title="Disponibles" />
+                        <h:message for="disponibles"/>
+
+                        <h:outputLabel value="Autor:" for="autoresId" />
+                        <h:selectOneMenu id="autoresId" value="#{libroBean.libro.autoresId}" title="Autor" required="true" requiredMessage="El autor es obligatorio.">
+                            <f:selectItem itemLabel="Seleccione al menos un autor" itemValue="#{null}"/>
+                            <f:selectItems value="#{autorBean.recuperarTodos()}" var="autor" itemLabel="#{autor.apellido}, #{autor.nombres}"/>
+                            <f:converter binding="#{converterAutor}"/>
+                        </h:selectOneMenu>
+                        <h:message for="autoresId"/>
+
+                        <h:outputLabel value="Categorías:" for="categoriasId" />
+                        <h:selectOneMenu id="categoriasId" value="#{libroBean.libro.categoriasId}" title="Categorias" required="true" requiredMessage="La categoría es obligatoria.">
+                            <f:selectItem itemLabel="Seleccione al menos una categoria" itemValue="#{null}"/>
+                            <f:selectItems value="#{categoriaBean.recuperarTodas()}" var="categoria" itemLabel="#{categoria.nombre}"/>
+                            <f:converter binding="#{converterCategoria}"/>
+                        </h:selectOneMenu>
+                        <h:message for="categoriasId"/>
+
+                        <h:commandButton value="Guardar" action="#{libroBean.guardar()}">
+                            <f:ajax execute="@form" render=":bloqueAbm"/>
+                        </h:commandButton>
+
+                        <h:inputHidden id="id" value="#{libroBean.libro.id}"/>
+                    </h:panelGrid>
+                </h:form>
+
+                <hr/>
+
+                <h:form id="listado">
+                    <h1><h:outputText value="Listado de Libros"/></h1>
+                    <h:dataTable value="#{libroBean.libros}" var="item" styleClass="tabla-admin">
+
+                        <h:column>
+                            <f:facet name="header"><h:outputText value="Título"/></f:facet>
+                            <h:outputText value="#{item.titulo}"/>
+                        </h:column>
+
+                        <h:column>
+                            <f:facet name="header"><h:outputText value="Autor"/></f:facet>
+                            <h:outputText value="#{item.autoresId.apellido}, #{item.autoresId.nombres}"/>
+                        </h:column>                   
+
+                        <h:column>
+                            <f:facet name="header"><h:outputText value="Editorial"/></f:facet>
+                            <h:outputText value="#{item.editorial}"/>
+                        </h:column>
+
+                        <h:column>
+                            <f:facet name="header"><h:outputText value="Edición"/></f:facet>
+                            <h:outputText value="#{item.edicion}"/>
+                        </h:column>
+
+                        <h:column>
+                            <f:facet name="header"><h:outputText value="Operaciones"/></f:facet>
+
+                            <h:commandButton value="Seleccionar Libro" action="#{libroBean.seleccionar()}">
+                                <f:setPropertyActionListener value="#{item.id}" target="#{libroBean.idLibro}"/>
+                                <f:ajax execute="@form" render=":bloqueAbm"/>
+                            </h:commandButton>
+
+                            <h:commandButton value="Eliminar" action="#{libroBean.eliminar()}">
+                                <f:setPropertyActionListener value="#{item.id}" target="#{libroBean.idLibro}"/>
+                                <f:ajax execute="@form" render=":bloqueAbm"/>
+                            </h:commandButton>
+
+                        </h:column>
+                    </h:dataTable>
+                </h:form>
+
+            </h:panelGroup>
+        </f:view>
+    </ui:define>
+
+    <ui:define name="aside">
+    </ui:define>
+</ui:composition>

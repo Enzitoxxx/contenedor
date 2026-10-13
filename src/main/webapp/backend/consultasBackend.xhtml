@@ -1,0 +1,80 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="jakarta.faces.facelets"
+                template="./layoutBackend.xhtml"
+                xmlns:h="jakarta.faces.html"
+                xmlns:f="jakarta.faces.core">
+    <f:metadata>
+        <f:viewAction action="#{usuarioController.verificarSesion()}" />
+    </f:metadata>
+
+    <ui:define name="header">
+        <h1 class="titulo">Consultas de Usuarios</h1>
+        <div class="contenedor-ancla">
+            <h:link outcome="/index" styleClass="btn-ancla">Ir al Inicio Público</h:link>
+        </div>
+    </ui:define>
+
+    <ui:define name="main">
+        <section>
+            <h2>Consultas y Mensajes Recibidos</h2>
+
+            <h:form id="formTablaConsultas">
+
+                <h:panelGroup rendered="#{empty consultaBean.consultas}">
+                    <p class="mensaje-vacio">
+                        No hay consultas pendientes de revisión.
+                    </p>
+                </h:panelGroup>
+
+                <h:dataTable value="#{consultaBean.consultas}" var="con" 
+                             styleClass="tabla-admin" 
+                             rendered="#{not empty consultaBean.consultas}">
+
+                    <h:column>
+                        <f:facet name="header">Fecha</f:facet>
+                        <h:outputText value="#{con.fecha}">
+                            <f:convertDateTime pattern="dd/MM/yyyy"/>
+                        </h:outputText>
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">Remitente</f:facet>
+                        <h:panelGroup>
+                            <strong>#{con.nombreCompleto}</strong>
+                            <span class="subtexto-admin">DNI: #{con.dni}</span>
+                        </h:panelGroup>
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">Email</f:facet>
+                        <a href="mailto:#{con.email}" class="enlace-admin">
+                            #{con.email}
+                        </a>
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">Mensaje de la Consulta</f:facet>
+                        <p class="texto-consulta-admin">#{con.consulta}</p>
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">Acciones</f:facet>
+                        <div class="acciones-celda">
+                            <h:commandLink action="#{consultaBean.eliminar()}" 
+                                           styleClass="btn-borrar-admin"
+                                           >
+                                <f:setPropertyActionListener value="#{con.id}" target="#{consultaBean.idConsulta}" />
+                                <f:ajax render="formTablaConsultas" />
+                                <i class="fa-solid fa-trash"></i> Borrar
+                            </h:commandLink>
+                        </div>
+                    </h:column>
+
+                </h:dataTable>
+            </h:form>
+        </section>
+    </ui:define>
+
+</ui:composition>

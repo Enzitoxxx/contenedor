@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="jakarta.faces.facelets"
+                xmlns:h="jakarta.faces.html"
+                xmlns:f="jakarta.faces.core"
+                template="./layout.xhtml">
+
+    <f:metadata>
+        <f:viewParam name="id" value="#{detalleLibroBean.idLibro}" />
+        <f:viewAction action="#{detalleLibroBean.cargarLibro()}" />
+    </f:metadata>
+
+    <ui:define name="header">
+        <h1 class="titulo">Información Detallada</h1>
+    </ui:define>
+
+    <ui:define name="main">
+        <section class="seccion-detalle">
+
+            <h2>#{detalleLibroBean.libro.titulo}</h2>
+
+            <div class="datos-bibliometricos">
+
+                <p>
+                    <strong>Autor:</strong> 
+                    #{detalleLibroBean.libro.autoresId.apellido}, #{detalleLibroBean.libro.autoresId.nombres}
+                </p>
+
+                <p>
+                    <strong>Categoría:</strong> 
+                    #{detalleLibroBean.libro.categoriasId.nombre}
+                </p>
+
+                <p>
+                    <strong>Año:</strong> 
+                    #{detalleLibroBean.libro.year}
+                </p>
+                <p>
+                    <strong>Edicion:</strong> 
+                    #{detalleLibroBean.libro.edicion}
+                </p>
+
+                <p>
+                    <strong>Editorial:</strong> 
+                    #{detalleLibroBean.libro.editorial}
+                </p>
+
+                <p>
+                    <strong>Copias disponibles:</strong> 
+                    #{detalleLibroBean.libro.disponibles}
+                </p>
+
+            </div>
+
+            <div class="info-bloque resena">
+                <h3>Descripción</h3>
+                <p>#{detalleLibroBean.libro.descripcion}</p>
+            </div>
+
+            <div class="botonera-volver">
+                <h:link outcome="libros" styleClass="btn-ver">
+                    Volver al listado
+                </h:link>
+            </div>
+
+        </section>
+    </ui:define>
+
+    <ui:define name="aside">
+        <div class="aside-main">
+            <div class="portada-contenedor">
+
+                <h:graphicImage library="imagenes"
+                                name="htmlYcss.jpg"
+                                styleClass="portada-libro"
+                                alt="Portada del libro"/>
+
+                <div class="estado-prestamo #{detalleLibroBean.libro.disponibles > 0 ? 'disponible' : 'no-disponible'}">
+
+                    <p>
+                        <i class="fa-solid #{detalleLibroBean.libro.disponibles > 0 ? 'fa-circle-check' : 'fa-circle-xmark'}"></i>
+                        #{detalleLibroBean.libro.disponibles > 0 ? 'Disponible en Sala' : 'Sin Copias Disponibles'}
+                    </p>
+
+                    <span class="ubicacion stock-destacado">
+                        Copias disponibles: #{detalleLibroBean.libro.disponibles}
+                    </span>
+
+                    <span class="ubicacion">
+                        Categoría: #{detalleLibroBean.libro.categoriasId.nombre}
+                    </span>
+
+                    <span class="ubicacion">
+                        Autor: #{detalleLibroBean.libro.autoresId.apellido}, #{detalleLibroBean.libro.autoresId.nombres}
+                    </span>
+
+                </div>
+                
+                <!-- Cuando un usuario/Socio, solicita un prestamo de un libro x. 
+                Toca el boton, ahi el socio tiene que ir al mostrador a presentar el DNI y es el bibliotecario(Administrador) quien le confirma el prestamo.
+                Digamos una vez que el socio pide el prestamos del libro, Debo iniciar sesion como root (seria como bibliotecario), seleccionar el libro que pidio ingresar el dni del socio y confirmar el prestamo.
+                
+                Tiene q iniciar sesion / registrarse para recien poder  pedir un prestamo.
+                
+                Yo pense asi la logica, pq en una biblioteca en la vida real el cliente no puede agarrar un libro e irse primero debe   al mostrador para registrarse para llevar el libro
+                -->
+                <h:panelGroup rendered="#{usuarioSBean.logueado}">
+                    <h:form>
+                        <h:commandButton value="#{prestamoBean.canasta.contains(detalleLibroBean.libro) ? 'Ya está en el carrito' : 'Solicitar Préstamo'}" 
+                                         action="#{prestamoBean.agregarAlCarrito(detalleLibroBean.libro)}" 
+                                         disabled="#{prestamoBean.canasta.contains(detalleLibroBean.libro)}"
+                                         styleClass="btn-reservar">
+                            <f:ajax execute="@form" render="@form :formSessionHeader"/>
+                        </h:commandButton>
+                    </h:form>
+                </h:panelGroup>
+
+            </div>
+        </div>
+    </ui:define>
+</ui:composition>

@@ -1,0 +1,85 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="jakarta.faces.facelets"
+      xmlns:h="jakarta.faces.html"
+      xmlns:f="jakarta.faces.core"
+      xmlns:pt="jakarta.faces.passthrough">
+
+    <ui:composition template="./layout.xhtml">
+
+        <f:metadata>
+            <f:viewParam name="filtro" value="#{libroBean.filtro}" />
+            <f:viewAction action="#{libroBean.buscar()}" />
+        </f:metadata>
+
+        <ui:define name="header">
+            <h1 class="titulo">Libros Disponibles</h1>
+            <div class="contenedor-ancla">
+                <a href="#contacto" class="btn-ancla">Realizar una consulta</a>
+            </div>
+        </ui:define>
+
+        <ui:define name="main">
+            <section>
+                <h2>Catálogo General de Lectura</h2>
+
+                <h:panelGroup id="listadoLibros" layout="block" styleClass="contenedor-tarjeta">
+                    <ui:repeat value="#{libroBean.libros}" var="lib">
+                        <div class="tarjeta">
+                            <div class="portada-contenedor">
+                                <i class="fa-solid fa-book-open fa-3x"></i>
+                            </div>
+                            <div class="info">
+                                <h3>#{lib.titulo}</h3>
+                                <p><strong>Editorial:</strong> #{lib.editorial}</p>
+                                <h:link outcome="detalle-libro" value="Ver" styleClass="btn-ver">
+                                    <f:param name="id" value="#{lib.id}" />
+                                </h:link>
+                            </div>
+                        </div>
+                    </ui:repeat>
+                </h:panelGroup>
+            </section>
+        </ui:define>
+
+        <ui:define name="aside">
+            
+            <!-- Este buscador a diferencia del que tengo en el index es que este uso AJAX seria que actualizo los datos en la misma pagina (busco). En cambio el de index me redirecciona hacia esta pagina-->
+            <div class="container-buscador">
+                <h3><i class="fa-solid fa-magnifying-glass"></i> Buscar Ejemplar</h3>
+
+                <h:form id="formBusquedaAjax" styleClass="input-group">
+
+                    <h:inputText value="#{libroBean.filtro}" 
+                                 pt:placeholder="Título o editorial..." />
+
+<!--                    <h:commandButton value="Buscar" 
+                                     action="#{libroBean.buscar()}" 
+                                     styleClass="btn-buscar">-->
+
+                        <f:ajax event="keyup"
+                                listener="#{libroBean.buscar()}"
+                                render=":listadoLibros"
+                                delay="400"
+                            />
+
+                    <!--</h:commandButton>-->
+                </h:form>
+            </div>
+
+            <div class="aside-main">
+                <h3><i class="fa-solid fa-filter"></i> Categorías</h3>
+                <ul class="lista-redes">
+                    <ui:repeat value="#{categoriaBean.recuperarTodas()}" var="c">
+                        <li>
+                            <a href="#" class="red-link l">
+                                <i class="fa-solid fa-book"></i> #{c.nombre}
+                            </a>
+                        </li>
+                    </ui:repeat>
+                </ul>
+            </div>
+        </ui:define>
+    </ui:composition>
+</html>

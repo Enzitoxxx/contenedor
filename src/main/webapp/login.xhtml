@@ -1,0 +1,136 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html"
+      xmlns:f="jakarta.faces.core">
+
+<h:head>
+    <title>Biblioteca - Acceso</title>
+
+    <h:outputStylesheet library="css" name="default.css"/>
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+</h:head>
+
+<h:body>
+
+    <h:panelGroup id="contenedorAcceso"
+                  layout="block"
+                  styleClass="contenedorAcceso">
+
+        <h2 class="titulo-login">
+            <i class="fa-solid fa-book-open"></i>
+            Biblioteca Virtual
+        </h2>
+        
+
+        <!-- LOGIN -->
+        <h:form id="formLogin"
+                rendered="#{not usuarioController.mostrandoRegistro}">
+
+            <h2>Iniciar Sesión</h2>
+            <h:messages globalOnly="true" styleClass="error-global"/>
+
+            <h:outputLabel for="usuario"
+                           value="Nombre de Usuario:"/>
+
+            <h:inputText id="usuario"
+                         value="#{usuarioController.txtUsuario}"
+                         required="true"
+                         requiredMessage="Falta ingresar el usuario."/>
+
+            <h:message for="usuario"
+                       styleClass="error-campo"/>
+
+            <h:outputLabel for="password"
+                           value="Contraseña:"/>
+
+            <h:inputSecret id="password"
+                           value="#{usuarioController.txtPassword}"
+                           required="true"
+                           requiredMessage="Falta ingresar la contraseña."/>
+
+            <h:message for="password"
+                       styleClass="error-campo"/>
+
+            <h:commandButton value="Ingresar"
+                             action="#{usuarioController.iniciarSesion()}"/>
+
+            <hr/>
+
+            <p>
+                ¿Sos nuevo en el sistema?
+
+                <h:commandLink value="Registrate aquí"
+                               action="#{usuarioController.mostrarFormularioRegistro()}"
+                               immediate="true">
+                    <f:ajax render=":contenedorAcceso"/>
+                </h:commandLink>
+            </p>
+
+        </h:form>
+
+        <!-- REGISTRO -->
+        <h:form id="formRegistro"
+                rendered="#{usuarioController.mostrandoRegistro}">
+
+            <h2>Crear Cuenta Nueva</h2>
+
+            <h:outputLabel for="regUsuario"
+                           value="Usuario:"/>
+
+            <h:inputText id="regUsuario"
+                         value="#{usuarioController.usuarioReg.nombreUsuario}"
+                         required="true"
+                         requiredMessage="El usuario es requerido."/>
+
+            <h:message for="regUsuario"
+                       styleClass="error-campo"/>
+
+            <h:outputLabel for="regEmail"
+                           value="Correo Electrónico:"/>
+
+            <h:inputText id="regEmail"
+                         value="#{usuarioController.usuarioReg.email}"
+                         required="true"
+                         requiredMessage="El correo es requerido."/>
+
+            <h:message for="regEmail"
+                       styleClass="error-campo"/>
+
+            <h:outputLabel for="regPassword"
+                           value="Contraseña:"/>
+
+            <h:inputSecret id="regPassword"
+                           value="#{usuarioController.usuarioReg.password}"
+                           required="true"
+                           requiredMessage="La contraseña es requerida."/>
+
+            <h:message for="regPassword"
+                       styleClass="error-campo"/>
+
+            <h:commandButton value="Confirmar Registro"
+                             action="#{usuarioController.registrar()}"/>
+
+            <hr/>
+
+            <p>
+                ¿Ya tenés una cuenta creada?
+
+                <h:commandLink value="Volver al Login"
+                               action="#{usuarioController.mostrarFormularioLogin()}"
+                               immediate="true">
+                    <f:ajax render=":contenedorAcceso"/>
+                </h:commandLink>
+            </p>
+
+        </h:form>
+
+    </h:panelGroup>
+
+</h:body>
+
+</html>

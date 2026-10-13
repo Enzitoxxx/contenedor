@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="jakarta.faces.facelets"
+                xmlns:h="jakarta.faces.html"
+                template="./layout.xhtml"
+                xmlns:f="jakarta.faces.core">
+
+    <ui:define name="header">
+        <h1 class="titulo">Nuestros Socios - Biblioteca UNSE</h1>
+        <div class="contenedor-ancla">
+            <a href="#contacto" class="btn-ancla">
+                Realizar una consulta
+            </a>
+        </div>
+    </ui:define>
+
+      <ui:define name="main">
+
+    <section class="contacto-main">
+
+        <h2>
+            <i class="fa-solid fa-address-book"></i>
+            Contacto Biblioteca UNSE
+        </h2>
+
+        <p class="contacto-descripcion">
+            Si tenés consultas sobre préstamos, reservas, renovaciones
+            o disponibilidad de libros, podés comunicarte con nosotros.
+        </p>
+
+        <div class="contacto-info">
+
+            <div class="contacto-item">
+                <i class="fa-solid fa-location-dot"></i>
+                <span>Castelli 559, Santiago del Estero</span>
+            </div>
+
+            <div class="contacto-item">
+                <i class="fa-solid fa-phone"></i>
+                <span>+54 3841 404667</span>
+            </div>
+
+            <div class="contacto-item">
+                <i class="fa-solid fa-envelope"></i>
+                <span>biblioteca@unse.edu.ar</span>
+            </div>
+
+            <div class="contacto-item">
+                <i class="fa-solid fa-clock"></i>
+                <span>Lunes a Viernes - 08:00 a 20:00 hs</span>
+            </div>
+
+        </div>
+
+    </section>
+
+
+
+
+
+        <!--            <h2>Listado de Socios Activos</h2>
+        
+                    <div id="contenedorSocio" class="contenedor-tarjeta">
+        
+                        <ui:repeat value="#{socioBean.socios}" var="soc">
+                            <div class="tarjeta tarjeta-socio">
+                                
+                                <h:graphicImage library="imagenes" 
+                                                name="#{soc.genero == 'mujer' ? 'mujer.jpg' : 'hombre.jpg'}" 
+                                                styleClass="img-socio" 
+                                                alt="Socio"/>
+        
+                                <div class="info">
+                                    <h3>#{soc.apellido}, #{soc.nombres}</h3>
+                                    <p><strong>DNI:</strong> #{soc.dni}</p>
+                                    <p><strong>N° Socio:</strong> #{soc.numeroSocio}</p>
+                                    <p><strong>Teléfono:</strong> #{soc.telefono}</p>
+                                    <p>
+                                        <strong>Estado:</strong>
+                                        <span class="badge #{soc.estado == 'activo' ? 'activo' : 'mora'}">
+        #{soc.estado == 'activo' ? 'Al día' : 'Con deuda'}
+    </span>
+</p>
+
+</div>
+</div>
+</ui:repeat> 
+
+</div>-->
+        <!--</section>-->
+    </ui:define>
+
+    <ui:define name="aside">
+    </ui:define>
+
+</ui:composition>

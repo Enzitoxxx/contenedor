@@ -1,0 +1,101 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="jakarta.faces.facelets"
+                template="./layoutBackend.xhtml"
+                xmlns:f="jakarta.faces.core"
+                xmlns:h="jakarta.faces.html"
+                xmlns:pt="jakarta.faces.passthrough">
+
+    <f:metadata>
+        <f:viewAction action="#{usuarioController.verificarSesion()}" />
+    </f:metadata>
+
+    <ui:define name="header">
+        <h1 class="titulo">ABM PROVEEDORES</h1>
+        <div class="contenedor-ancla">
+            <h:link outcome="/index" styleClass="btn-ancla">Ir al Inicio Público</h:link>
+        </div>
+    </ui:define>
+
+    <ui:define name="main">
+    <f:view>
+        <div class="contenedor-flex">
+            <div class="main-admin">
+                <h:panelGroup id="bloqueAbm" layout="block">
+                    <h:form id="formAlta">
+                        <h1><h:outputText value="REGISTRAR PROVEEDOR"/></h1>
+                        <h:panelGrid columns="3">
+                            <h:outputLabel value="ApellidoNombre:" for="apellidoNombre" />
+                            <h:inputText id="apellidoNombre" value="#{proveedorBean.prov.apellidoNombre}" />
+                            <h:message for="apellidoNombre"/>
+                            
+                            <h:outputLabel value="Domicilio:" for="domicilio" />
+                            <h:inputText id="domicilio" value="#{proveedorBean.prov.domicilio}" />
+                            <h:message for="domicilio"/>
+                            
+                            <h:outputLabel value="Telefono:" for="telefono" />
+                            <h:inputText id="telefono" value="#{proveedorBean.prov.telefono}" />
+                            <h:message for="telefono"/>
+
+                            <h:outputLabel value="Categorías:" for="categoriasId" />
+                            <h:selectOneMenu id="categoriasId" value="#{proveedorBean.prov.idCategoria}" required="true">
+                                <f:selectItem itemLabel="Seleccione..." itemValue="#{null}"/>
+                                <f:selectItems value="#{categoriaBean.recuperarTodas()}" var="categoria" itemLabel="#{categoria.nombre}"/>
+                                <f:converter binding="#{converterCategoria}"/>
+                            </h:selectOneMenu>
+                            <h:message for="categoriasId"/>
+
+                            <h:commandButton value="Guardar" action="#{proveedorBean.guardar()}">
+                                <f:ajax execute="@form" render=":bloqueAbm :listado:tablaProveedores"/>
+                            </h:commandButton>
+                            <h:inputHidden id="id" value="#{proveedorBean.prov.id}"/>
+                        </h:panelGrid>
+                    </h:form>
+                    <hr/>
+
+                    <h:form id="formBusqueda">
+                        <h3><i class="fa-solid fa-magnifying-glass"></i> Buscar Proveedor</h3>
+                        <h:inputText value="#{proveedorBean.filtro}" pt:placeholder="Buscar...">
+                            <f:ajax event="keyup" listener="#{proveedorBean.buscar()}" render=":listado:tablaProveedores" delay="300" />
+                        </h:inputText>
+                    </h:form>
+
+                    <h:form id="listado">
+                        <h1>Listado de Proveedores</h1>
+                        <h:dataTable id="tablaProveedores" value="#{proveedorBean.proveedores}" var="item" styleClass="tabla-admin">
+                            <h:column><f:facet name="header">Apellido y Nombre</f:facet>#{item.apellidoNombre}</h:column>
+                            <h:column><f:facet name="header">Domicilio</f:facet>#{item.domicilio}</h:column>
+                            <h:column><f:facet name="header">Teléfono</f:facet>#{item.telefono}</h:column>
+                            <h:column><f:facet name="header">Categoría</f:facet>#{item.idCategoria.nombre}</h:column>
+                            <h:column>
+                                <h:commandButton value="Seleccionar" action="#{proveedorBean.seleccionar()}">
+                                    <f:setPropertyActionListener value="#{item.id}" target="#{proveedorBean.idProveedor}"/>
+                                    <f:ajax execute="@this" render=":bloqueAbm"/>
+                                </h:commandButton>
+                                <h:commandButton value="Eliminar" action="#{proveedorBean.eliminar()}">
+                                    <f:setPropertyActionListener value="#{item.id}" target="#{proveedorBean.idProveedor}"/>
+                                    <f:ajax execute="@this" render=":bloqueAbm :listado:tablaProveedores"/>
+                                </h:commandButton>
+                            </h:column>
+                        </h:dataTable>
+                    </h:form>
+                </h:panelGroup>
+            </div>
+
+            <aside>
+                <div class="stats-panel">
+                    <h3>ESTADISTICAS</h3>
+                    <p>Total de proveedores: <strong>#{proveedorBean.totalProveedores}</strong></p>
+                    <h4>Top 3 Categorías</h4>
+                    <ul>
+                        <ui:repeat value="#{proveedorBean.categoriasPopulares}" var="cat">
+                            <li>#{cat[0]} - #{cat[1]} proveedores</li>
+                        </ui:repeat>
+                    </ul>
+                </div>
+            </aside>
+        </div>
+    </f:view>
+</ui:define>
+</ui:composition>
